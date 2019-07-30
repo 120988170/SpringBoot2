@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<title>管理系统</title>
+		<link rel="stylesheet" href="../../css/bootstrap.min.css" />
+	</head>
+	<style>
+		
+	</style>
+	<body>
+		<nav class="navbar navbar-default" style="background-color: #62A0DD;">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand" id="lsc_a" style="color: #000000;">管理系统</a>
+				</div>
+				<div class="collapse navbar-collapse lsc_color" id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav navbar-right">
+						<li><a style="color: #000000;">下午好&nbsp;&nbsp;&nbsp;&nbsp; [[${session.STU.name}]]   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;欢迎你！</a></li>
+						<li><a href="#" class="btn btn-default btn-success" id="lsc_a" style="background-color: lightgreen;">退出</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-2">
+					<ul id="myTabs" class="nav nav-tabs nav-stacked" role="tablist">
+						<li role="presentation" class="active">
+							<a href="#home" id="home-tab" role="tab" data-toggle="tab" aria-controls="home" aria-expanded="false">学生列表</a></li>
+						<li role="presentation" class="lsc_a_1">
+							<a href="#profile1" role="tab" id="profile-tab" data-toggle="tab" aria-controls="profile" aria-expanded="true">新增</a>
+						</li>
+						<li role="presentation" class="lsc_a_2">
+							<a href="#profile2" role="tab" id="profile-tab" data-toggle="tab" aria-controls="profile" aria-expanded="true">奖惩列表</a>
+						</li>
+						<li role="presentation" class="lsc_a_3">
+							<a href="#profile3" role="tab" id="profile-tab" data-toggle="tab" aria-controls="profile" aria-expanded="true">修改</a>
+						</li>
+						<li role="presentation" class="lsc_a_4">
+							<a href="#profile4" role="tab" id="profile-tab" data-toggle="tab" aria-controls="profile" aria-expanded="true">待定</a>
+						</li>
+					</ul>
+				</div>
+		
+				<div class="col-md-8">
+					<div id="myTabContent" class="tab-content">
+						<div role="tabpanel" class="tab-pane fade active in" id="home" aria-labelledby="home-tab">
+							<div class="container" id="listCnt">
+								<div class="row" >
+									<div class="col-md-12">
+										<table class="table table-striped">
+											<thead>
+												<tr>
+													<td>学号</td>
+													<td>姓名</td>
+													<td>职务</td>
+													<td>专业</td>
+													<td>班级</td>
+													<td>性别</td>
+													<td>生日</td>
+													<td>电话</td>
+													<td>操作</td>
+												</tr>
+											</thead>
+											<tbody>
+												<tr th:each="temp,iter:${PAGE.list}">
+													<td th:text="${temp.code}"></td>
+													<td th:text="${temp.name}"></td>
+													<td>
+														<div th:switch="${temp.job}">
+															<span th:case="1" style="color:green">计算机</span>
+															<span th:case="2" style="color:red">电气</span>
+															<span th:case="3" style="color:green">金融</span>
+														</div>
+													</td>
+													<td>
+														<div th:switch="${temp.major}">
+															<span th:case="1" style="color:green">普通学生</span>
+															<span th:case="2" style="color:red">组长</span>
+															<span th:case="3" style="color:green">班长</span>
+														</div>
+													</td>
+													<td th:text="${temp.grade}"></td>
+													<td th:text="${temp.sex}"></td>
+													<td th:text="${temp.birthday}"></td>
+													<td th:text="${temp.tel}"></td>
+													<td>
+														<a  href="javascript:void(0)" class="btn btn-success" th:onclick="findRecord([[${temp.code}]])">查看</a>
+														<input type="hidden" th:value="${temp.id}">
+													</td>
+												</tr>
+											</tbody>
+											<tfoot>
+												<tr>
+													<td colspan="9">
+														<ul class="pager">
+															<li>
+																<a th:href="|/api/index/list?p=1&s=${PAGE.pageSize}|">首页</a>
+															</li>
+															<li>
+																<a th:href="|/api/index/list?p=${PAGE.prePage}&s=${PAGE.pageSize}|">上一页</a>
+															</li>
+															<li>
+																<a th:href="|/api/index/list?p=${PAGE.nextPage}&s=${PAGE.pageSize}|">下一页</a>
+															</li>
+															<li>
+																<a th:href="|/api/index/list?p=${PAGE.lastPage}&s=${PAGE.pageSize}|">末页</a>
+															</li>
+														</ul>
+													</td>
+												</tr>
+											</tfoot>
+										</table>
+									</div>
+								</div>
+								
+								<div class="row" >
+									<div class="col-md-12">
+										<table class="table table-striped">
+											<thead>
+												<tr>
+													<td>序号</td>
+													<td>奖惩</td>
+													<td>学生姓名</td>
+													<td>创建人</td>
+													<td>描述</td>
+												</tr>
+											</thead>
+											<tbody id="airList">
+												
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div role="tabpanel" class="tab-pane fade" id="profile1" aria-labelledby="profile-tab">
+							<div style="width: 70%; margin: 0 auto;">
+								<form class="form-horizontal" id="insCnt">
+									<div class="form-group">
+										<label for="inputEmail3" class="col-sm-2 control-label">供应商编码：</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="inputEmail3">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputName" class="col-sm-2 control-label">供应商名称：</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="inputName">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputContacts" class="col-sm-2 control-label">联系人：</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="inputContacts">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputPhone" class="col-sm-2 control-label">联系电话：</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="inputPhone">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputAdd" class="col-sm-2 control-label">联系地址：</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="inputAdd">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputE2" class="col-sm-2 control-label">传真：</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="inputE2">
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-sm-offset-2 col-sm-10">
+											<button type="button" class="btn btn-default" id="lsc_save">新增保存</button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div role="tabpanel" class="tab-pane fade" id="profile2" aria-labelledby="dropdown1-tab" >
+							<div class="container" id="listCnt">
+								<div class="row" >
+									<div class="col-md-12">
+										<table class="table table-striped">
+											<thead>
+												<tr>
+													<td>序号</td>
+													<td>奖惩</td>
+													<td>学生姓名</td>
+													<td>创建人</td>
+													<td>描述</td>
+												</tr>
+											</thead>
+											<tbody>
+												<tr th:each="temp,iter:${AllRecord.list}">
+													<td th:text="${temp.id}"></td>
+													<td th:text="${temp.code}"></td>
+													<td th:text="${temp.stucode}"></td>
+													<td th:text="${temp.createby}"></td>
+													<td th:text="${temp.des}"></td>
+													<td>
+														<a  href="javascript:void(0)" class="btn btn-success" th:onclick="updateTR([[${temp.id}]])">修改</a>
+														<a  href="javascript:void(0)" class="btn btn-success" th:onclick="deleteTR([[${temp.id}]])">删除</a>
+													</td>
+												</tr>
+											</tbody>
+											<tfoot>
+												<tr>
+													<td colspan="9">
+														<ul class="pager">
+															<li>
+																<a th:href="|/api/index2/list?p=1&s=${AllRecord.pageSize}|">首页</a>
+															</li>
+															<li>
+																<a th:href="|/api/index2/list?p=${AllRecord.prePage}&s=${AllRecord.pageSize}|">上一页</a>
+															</li>
+															<li>
+																<a th:href="|/api/index2/list?p=${AllRecord.nextPage}&s=${AllRecord.pageSize}|">下一页</a>
+															</li>
+															<li>
+																<a th:href="|/api/index2/list?p=${AllRecord.lastPage}&s=${AllRecord.pageSize}|">末页</a>
+															</li>
+														</ul>
+													</td>
+												</tr>
+											</tfoot>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div role="tabpanel" class="tab-pane fade" id="profile3" aria-labelledby="dropdown2-tab">
+							<div style="width: 70%; margin: 0 auto;">
+								<form class="form-horizontal" id="insCnt">
+									<div class="form-group">
+										<label for="trcode" class="col-sm-2 control-label">奖惩记录名：</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="trcode"> 
+											<input type="hidden" value="" id="trid">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="trstucode" class="col-sm-2 control-label">奖惩对象：</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="trstucode">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="trdes" class="col-sm-2 control-label">描述：</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" id="trdes">
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-sm-offset-2 col-sm-10">
+											<button type="button" class="btn btn-default" id="lsc_save222">修改保存</button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div role="tabpanel" class="tab-pane fade" id="profile4" aria-labelledby="dropdown2-tab">
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="../../js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../../js/vue.js"></script>
+	<script type="text/javascript" src="../../js/dialog.js"></script>
+	
+	<script type="text/javascript">
+	
+	function findRecord(stuCode) {
+		$.getJSON("/c/Records?stuCode="+stuCode,
+				function(records) {
+			$("#airList").html("");
+			$.each(records, function(i, obj) {
+				var $row = $("<tr><td>"+obj.id+"</td><td>" + obj.code + "</td><td>" + obj.stucode
+						+ "</td><td>" + obj.createby + "</td><td>" + obj.des
+						+ "</td></tr>");
+				$("#airList").append($row);
+			});
+		});
+	}
+	
+	function deleteTR(id){
+		if(confirm('是否移除？')){
+			$.ajax({
+				url:"/c/deleteTR?id="+id,
+				type:"delete",
+				dataType:"json",
+				success:function(obj){
+					if(obj.msg=="100"){
+						alert("删除成功！");
+					}else{
+						alert("删除失败！");
+					}
+				}
+			})
+		}
+	}
+	
+	function updateTR(id){
+			$.ajax({
+				url:"/c/selectByTR?id="+id,
+				type:"get",
+				dataType:"json",
+				success:function(obj){
+					$("#trid").val(obj.id);
+					$("#trcode").val(obj.code);
+					$("#trstucode").val(obj.stucode);
+					$("#trdes").val(obj.des);
+				}
+			})
+			
+			$("#home").removeClass("active").removeClass("in");
+			$("#profile1").removeClass("active").removeClass("in");
+			$("#profile2").removeClass("active").removeClass("in");
+			$("#profile4").removeClass("active").removeClass("in");
+			$("#profile3").addClass("active").addClass("in");
+	}
+	
+	$("#lsc_save222").click(function(){
+		alert(111);
+		var  trid= $("#trid").val();
+		var  trcode= $("#trcode").val();
+		var  trstucode= $("#trstucode").val();
+		var  trdes = $("#trdes").val();
+		var TRecord = {};
+		TRecord["id"] = trid;
+		TRecord["code"] = trcode;
+		TRecord["stucode"] = trstucode;
+		TRecord["des"] = trdes;
+		$.ajax({
+			url:"/c/updateTR",
+			type:"put",
+			data:{
+				trecord : JSON.stringify(TRecord)
+			},
+			dataType:"json",
+			success:function(obj){
+				if(obj.msg=="100"){
+					alert("修改成功！");
+				}else{
+					alert("修改失败！");
+				}
+			}
+		})
+	})
+	</script>
+</html>

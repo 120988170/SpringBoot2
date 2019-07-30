@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.accp.dao.TRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.accp.pojo.TRecord" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="stuCode" property="stucode" jdbcType="VARCHAR" />
+    <result column="createDate" property="createdate" jdbcType="DATE" />
+    <result column="createBy" property="createby" jdbcType="VARCHAR" />
+    <result column="des" property="des" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_record
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insert" parameterType="com.accp.pojo.TRecord" useGeneratedKeys="true" keyProperty="id" >
+    insert into t_record (code, stuCode, createDate, 
+      createBy, des)
+    values (#{code,jdbcType=VARCHAR}, #{stucode,jdbcType=VARCHAR}, #{createdate,jdbcType=DATE}, 
+      #{createby,jdbcType=VARCHAR}, #{des,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="com.accp.pojo.TRecord" >
+    update t_record
+    set code = #{code,jdbcType=VARCHAR},
+      stuCode = #{stucode,jdbcType=VARCHAR},
+      des = #{des,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectByCS" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, code, stuCode, createDate, createBy, des
+    from t_record
+    where code like concat('%',#{code},'%') or  stuCode like concat('%',#{stucode},'%')
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select id, code, stuCode, createDate, createBy, des
+    from t_record
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, code, stuCode, createDate, createBy, des
+    from t_record
+  </select>
+  
+  <select id="selectByStuCode" resultMap="BaseResultMap">
+    select id, code, stuCode, createDate, createBy, des
+    from t_record
+    where stuCode = #{0}
+  </select>
+  
+</mapper>
